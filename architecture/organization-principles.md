@@ -8,6 +8,134 @@ This document addresses the placement of all system components within the archit
 
 The architecture stress-tests the algebra to ensure every concern has a clean, non-overlapping place. This document closes remaining gaps identified during architectural review.
 
+## Canonical Project Hierarchy
+
+This is the complete, concrete directory structure that implements the organizational principles:
+
+```
+infra/
+├── README.md
+├── default.nix                # (optional) root semantic index
+├── flake.nix                  # distribution surface (re-export only)
+│
+├── capabilities/
+│   ├── README.md
+│   ├── default.nix
+│   │
+│   ├── modules/               # semantic capabilities (laws)
+│   │   ├── README.md
+│   │   ├── default.nix
+│   │   ├── system/
+│   │   │   └── default.nix
+│   │   ├── user-env/
+│   │   │   └── default.nix
+│   │   ├── editor/
+│   │   │   └── default.nix
+│   │   ├── dev-env/
+│   │   │   └── default.nix
+│   │   ├── infra/
+│   │   │   └── default.nix
+│   │   ├── ci/
+│   │   │   └── default.nix
+│   │   ├── security/
+│   │   │   └── default.nix
+│   │   └── simulation/
+│   │       └── default.nix
+│   │
+│   ├── tooling/               # human / runtime interfaces
+│   │   ├── README.md
+│   │   ├── default.nix
+│   │   ├── shells/
+│   │   │   └── default.nix
+│   │   ├── terminals/
+│   │   │   └── default.nix
+│   │   ├── editors/
+│   │   │   ├── default.nix
+│   │   │   ├── emacs/
+│   │   │   │   └── default.nix
+│   │   │   ├── spacemacs/
+│   │   │   │   └── default.nix
+│   │   │   └── vim/
+│   │   │       └── default.nix
+│   │   ├── apps/              # CLI wrappers / UX
+│   │   │   └── default.nix
+│   │   └── scripts/
+│   │       └── default.nix
+│   │
+│   └── packages/              # build artifacts (derivations)
+│       ├── README.md
+│       └── default.nix
+│
+├── profiles/                  # behavioral paths (contexts)
+│   ├── README.md
+│   ├── default.nix
+│   │
+│   ├── system/
+│   │   └── default.nix
+│   │
+│   ├── user/
+│   │   ├── base/
+│   │   │   └── default.nix
+│   │   ├── python-dev/
+│   │   │   └── default.nix
+│   │   ├── rust-dev/
+│   │   │   └── default.nix
+│   │   ├── audio-eng/
+│   │   │   └── default.nix
+│   │   └── infra-dev/
+│   │       └── default.nix
+│   │
+│   ├── dev/
+│   │   └── simulation/
+│   │       └── default.nix
+│   │
+│   └── project/
+│       └── default.nix
+│
+├── instances/                 # bindings to reality
+│   ├── README.md
+│   ├── default.nix
+│   │
+│   ├── homelab/
+│   │   ├── hosts/
+│   │   │   └── math-machine/
+│   │   │       └── default.nix
+│   │   └── users/
+│   │       ├── cloud-desktop-a/
+│   │       │   └── default.nix
+│   │       └── cloud-desktop-b/
+│   │           └── default.nix
+│   │
+│   └── cloud/
+│       └── aws/
+│           └── accounts/
+│               └── work-prod/
+│                   └── default.nix
+│
+└── projects/                  # proof workspaces
+    ├── README.md
+    └── example-project/
+        ├── README.md
+        ├── default.nix        # project presentation
+        ├── src/
+        │   └── main.rs
+        ├── docs/
+        │   └── design.org
+        ├── tests/
+        │   └── smoke.rs
+        └── packaging/
+            └── default.nix    # derivation → package
+```
+
+### Hierarchy Semantics
+
+- **`capabilities/modules/`** - Abstract semantic laws (system, editor, infra, CI, security, simulation)
+- **`capabilities/tooling/`** - Human and runtime interfaces (shells, terminals, editors, scripts)
+- **`capabilities/packages/`** - Build artifacts and derivations
+- **`profiles/`** - Behavioral contexts that activate capabilities (system, user, dev, project)
+- **`instances/`** - Concrete bindings to physical/cloud reality (homelab hosts, AWS accounts)
+- **`projects/`** - Workspaces that prove the framework works in practice
+
 ## 1. What is Already Complete
 
 These dimensions are fully accounted for and **locked in**:
